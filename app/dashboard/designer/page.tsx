@@ -2,6 +2,7 @@
 import { useState } from "react"
 import type React from "react"
 
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import Sidebar from "@/components/sidebar"
 import ToolCard from "@/components/tool-card"
@@ -24,7 +25,7 @@ import CodeFormatterTool from "@/components/code-formatter-tool"; // Import Code
 import RandomUUIDGeneratorTool from "@/components/random-uuid-generator-tool"; // Import Random UUID Generator Tool
 import CsvExcelSqlPgTool from "@/components/csv-excel-sql-pg-tool"; // Import CSV/Excel/SQL Tool
 import NetworkTool from "@/components/network-tool"; // Import CSV/Excel/SQL Tool
-
+import PasswordGeneratorTool from "@/components/password-tool"; // Import Password Generator Tool
 interface Tool {
   id: string  
   name: string
@@ -147,7 +148,7 @@ export default function Home() {
       id: "code-formatter",
       name: "Code Formatter",
       icon: "🖋️",
-      description: "Format JSON, XML, and YAML code.",
+      description: "Format HTML, CSS, Javascript, Python code.",
       component: <CodeFormatterTool />,
     },
     {
@@ -170,6 +171,13 @@ export default function Home() {
       icon: "🌐",
       description: "Perform network-related operations like ping, traceroute, and more.",
       component: <NetworkTool />, // Add the corresponding component
+    },
+    {
+      id: "password-generator",
+      name: "Password Generator",
+      icon: "🔒",
+      description: "Generate secure random passwords.",
+      component: <PasswordGeneratorTool />,
     },
   ]
 

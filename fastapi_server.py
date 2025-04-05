@@ -584,32 +584,54 @@ async def network_tool_endpoint(request: Request):
         payload = await request.json()
         host = payload.get("host", "")
         action = payload.get("action", "")
-
+        
         if not host:
             raise HTTPException(status_code=400, detail="Host is required.")
-
+        
         if action == "ping":
-            result = []
-            for line in ping_host(host):
-                result.append(line)
+            result = ping_host(host)
             return JSONResponse({"result": "\n".join(result)})
-
+        
         elif action == "ip-lookup":
             result = ip_lookup(host)
             return JSONResponse({"result": result})
-
+        
         elif action == "dns-lookup":
             result = dns_lookup(host)
             return JSONResponse({"result": result})
-
+        
         else:
             raise HTTPException(status_code=400, detail="Invalid action specified.")
-
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to perform network operation: {str(e)}")
+
+
+@app.post("/format-code")
+async def format_code_endpoint(request: Request):
+    """
+    Endpoint to format code based on the provided language.
+    """
+    try:
+        payload = await request.json()
+        code = payload.get("code", "")
+        language = payload.get("language", "")
+
+        if not code or not language:
+            raise HTTPException(status_code=400, detail="Code and language are required.")
+
+        # Call the format_code function from codeFormatter.py
+        from python.codeFormatter import format_code
+        formatted_code = format_code(code, language)
+
+        return JSONResponse({"formatted_code": formatted_code})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to format code: {str(e)}")
+
+
+
     
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
     
-    
-    
+    #
