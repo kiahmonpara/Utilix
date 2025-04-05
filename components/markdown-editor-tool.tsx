@@ -7,6 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Loader2, Check, FileText } from "lucide-react"
 
+// API configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
 export default function MarkdownEditorTool() {
   const [markdown, setMarkdown] = useState("")
   const [preview, setPreview] = useState("")
@@ -25,7 +28,8 @@ export default function MarkdownEditorTool() {
     setValidationMessage(null)
 
     try {
-      const response = await fetch("/api/markdown-validator", {
+      // Updated to use FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/markdown-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,12 +37,12 @@ export default function MarkdownEditorTool() {
         body: JSON.stringify({ markdown, action: "validate" }),
       })
 
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `Server error: ${response.status}`)
       }
 
+      const data = await response.json()
       setValidationMessage(data.message)
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred")
@@ -57,7 +61,8 @@ export default function MarkdownEditorTool() {
     setError(null)
 
     try {
-      const response = await fetch("/api/markdown-validator", {
+      // Updated to use FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/markdown-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,12 +70,12 @@ export default function MarkdownEditorTool() {
         body: JSON.stringify({ markdown, action: "format" }),
       })
 
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `Server error: ${response.status}`)
       }
 
+      const data = await response.json()
       setMarkdown(data.formatted)
       setValidationMessage("Markdown formatting applied.")
     } catch (err) {
@@ -90,7 +95,8 @@ export default function MarkdownEditorTool() {
     setError(null)
 
     try {
-      const response = await fetch("/api/markdown-validator", {
+      // Updated to use FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/markdown-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,12 +104,12 @@ export default function MarkdownEditorTool() {
         body: JSON.stringify({ markdown, action: "preview" }),
       })
 
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `Server error: ${response.status}`)
       }
 
+      const data = await response.json()
       setPreview(data.html)
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred")
@@ -181,4 +187,3 @@ export default function MarkdownEditorTool() {
     </div>
   )
 }
-

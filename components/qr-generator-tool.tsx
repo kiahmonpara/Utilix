@@ -10,6 +10,9 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Loader2, Download, QrCode } from "lucide-react"
 
+// API configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
 export default function QrGeneratorTool() {
   const [data, setData] = useState("")
   const [color, setColor] = useState("#000000")
@@ -48,14 +51,22 @@ export default function QrGeneratorTool() {
       formData.append("rounded", rounded.toString())
       if (logo) formData.append("logo", logo)
 
-      const response = await fetch("/api/qr-generator", {
+      // Modified to use the FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/qr-generator`, {
         method: "POST",
         body: formData,
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to generate QR code")
+        let errorMessage = "Failed to generate QR code"
+        try {
+          const errorData = await response.json()
+          errorMessage = errorData.detail || errorData.error || errorMessage
+        } catch (e) {
+          // If the error response isn't JSON
+          errorMessage = `Server error: ${response.status}`
+        }
+        throw new Error(errorMessage)
       }
 
       const blob = await response.blob()
@@ -188,4 +199,3 @@ export default function QrGeneratorTool() {
     </div>
   )
 }
-

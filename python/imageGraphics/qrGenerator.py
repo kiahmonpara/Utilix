@@ -2,6 +2,16 @@ import qrcode
 from PIL import Image, ImageDraw
 import os
 
+def normalize_color(c: str) -> str:
+    # If the string is already a valid color name or starts with '#', return as is
+    if c.startswith('#'):
+        return c
+    # If c is hex (6 or 3 characters), add '#' prefix
+    if len(c) in (3, 6) and all(ch in '0123456789abcdefABCDEF' for ch in c):
+        return '#' + c
+    return c
+
+
 def generate_qr(data, filename=None, logo=None, color="black", bg_color=None, 
                 transparent=False, border_style=None, border_width=4, border_color=None,
                 box_size=10, rounded=False, quiet_zone=4):
@@ -26,6 +36,13 @@ def generate_qr(data, filename=None, logo=None, color="black", bg_color=None,
     if not filename:
         filename = "qrcode.png"
 
+    # Normalize colors to ensure valid format
+    color = normalize_color(color)
+    if bg_color is not None:
+        bg_color = normalize_color(bg_color)
+    if border_color is not None:
+        border_color = normalize_color(border_color)
+
     # Handle transparent background
     if transparent:
         bg_color = (255, 255, 255, 0)  # Transparent
@@ -35,6 +52,7 @@ def generate_qr(data, filename=None, logo=None, color="black", bg_color=None,
     # Use same color for border if not specified
     if border_color is None:
         border_color = color
+        
         
     # Create QR code with good error correction
     qr = qrcode.QRCode(

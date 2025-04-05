@@ -13,9 +13,13 @@ import PaletteGeneratorTool from "@/components/palette-generator-tool"
 import ImageGeneratorTool from "@/components/image-generator-tool"
 import MarkdownEditorTool from "@/components/markdown-editor-tool"
 import YamlValidatorTool from "@/components/yaml-validator-tool"
+import XmlValidatorTool from "@/components/xml-validator-tool"
+import JsonValidatorTool from "@/components/json-validator-tool"
+import ColorPickerTool from "@/components/color-picker-tool"
+import PdfMergerTool from "@/components/pdf-merger-tool"
 
 interface Tool {
-  id: string
+  id: string  
   name: string
   icon: string
   description: string
@@ -82,6 +86,34 @@ export default function Home() {
       icon: "📋",
       description: "Validate and format YAML documents",
       component: <YamlValidatorTool />,
+    },
+    {
+      id: "xml-validator",
+      name: "XML Validator",
+      icon: "📄",
+      description: "Validate and format XML documents",
+      component: <XmlValidatorTool />, // Add the corresponding component
+    },
+    {
+      id: "json-validator",
+      name: "JSON Validator",
+      icon: "🔍",
+      description: "Validate and format JSON documents",
+      component: <JsonValidatorTool />, // Add the corresponding component
+    },
+    {
+      id: "color-picker",
+      name: "Color Picker",
+      icon: "🌈",
+      description: "Pick and explore colors with ease",
+      component: <ColorPickerTool />, // Add the corresponding component
+    },  
+    {
+      id: "pdf-merger",
+      name: "PDF Merger",
+      icon: "📑",
+      description: "Combine multiple PDF files into one document",
+      component: <PdfMergerTool />,
     },
   ]
 

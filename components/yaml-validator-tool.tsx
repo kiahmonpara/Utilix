@@ -6,6 +6,9 @@ import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Loader2, Check, FileCode } from "lucide-react"
 
+// API configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
 export default function YamlValidatorTool() {
   const [yaml, setYaml] = useState("")
   const [loading, setLoading] = useState(false)
@@ -24,13 +27,19 @@ export default function YamlValidatorTool() {
     setValidationResult(null)
 
     try {
-      const response = await fetch("/api/yaml-validator", {
+      // Updated to use FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/yaml-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ yaml, action: "validate" }),
       })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `Server error: ${response.status}`)
+      }
 
       const data = await response.json()
 
@@ -57,13 +66,19 @@ export default function YamlValidatorTool() {
     setFormatted(null)
 
     try {
-      const response = await fetch("/api/yaml-validator", {
+      // Updated to use FastAPI endpoint
+      const response = await fetch(`${API_BASE_URL}/yaml-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ yaml, action: "format" }),
       })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `Server error: ${response.status}`)
+      }
 
       const data = await response.json()
 
@@ -153,4 +168,3 @@ export default function YamlValidatorTool() {
     </div>
   )
 }
-
