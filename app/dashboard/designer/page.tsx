@@ -17,6 +17,13 @@ import XmlValidatorTool from "@/components/xml-validator-tool"
 import JsonValidatorTool from "@/components/json-validator-tool"
 import ColorPickerTool from "@/components/color-picker-tool"
 import PdfMergerTool from "@/components/pdf-merger-tool"
+import RestApiClientTool from "@/components/rest-api-client-tool"
+import UserFeedbackTool from "@/components/user-feedback-tool"; // Import User Feedback Tool
+import RandomGeneratorTool from "@/components/random-generator-tool"; // Import Random Generator Tool
+import CodeFormatterTool from "@/components/code-formatter-tool"; // Import Code Formatter Tool
+import RandomUUIDGeneratorTool from "@/components/random-uuid-generator-tool"; // Import Random UUID Generator Tool
+import CsvExcelSqlPgTool from "@/components/csv-excel-sql-pg-tool"; // Import CSV/Excel/SQL Tool
+import NetworkTool from "@/components/network-tool"; // Import CSV/Excel/SQL Tool
 
 interface Tool {
   id: string  
@@ -114,6 +121,55 @@ export default function Home() {
       icon: "📑",
       description: "Combine multiple PDF files into one document",
       component: <PdfMergerTool />,
+    },
+    {
+      id: "rest-api-client",
+      name: "REST API Client",
+      icon: "🌐",
+      description: "Test and interact with REST APIs",
+      component: <RestApiClientTool />,
+    },
+    {
+      id: "user-feedback",
+      name: "User Feedback",
+      icon: "💬",
+      description: "Provide feedback messages to users.",
+      component: <UserFeedbackTool />,
+    },
+    {
+      id: "random-generator",
+      name: "Random Generator",
+      icon: "🎲",
+      description: "Generate random numbers, strings, colors, and more.",
+      component: <RandomGeneratorTool />,
+    },
+    {
+      id: "code-formatter",
+      name: "Code Formatter",
+      icon: "🖋️",
+      description: "Format JSON, XML, and YAML code.",
+      component: <CodeFormatterTool />,
+    },
+    {
+      id: "random-uuid-generator",
+      name: "Random UUID Generator",
+      icon: "🔑",
+      description: "Generate random UUIDs (version 4).",
+      component: <RandomUUIDGeneratorTool />,
+    },
+    {
+      id: "csv-excel-sql-pg",
+      name: "CSV/Excel/SQL Tool",
+      icon: "📊",
+      description: "Convert and manage CSV, Excel, and SQL data.",
+      component: <CsvExcelSqlPgTool />,
+    },
+    {
+      id: "network-tool",
+      name: "Network Tool",
+      icon: "🌐",
+      description: "Perform network-related operations like ping, traceroute, and more.",
+      component: <NetworkTool />, // Add the corresponding component
     },
   ]
 

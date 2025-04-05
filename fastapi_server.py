@@ -20,7 +20,7 @@ from python.textValidators.json_validator import validate_json, get_json_error, 
 from python.textValidators.xml_validator import validate_xml, get_xml_error, format_xml   # JSON validator service
 from python.pdfs.pdfMerge import merge_pdfs  # PDF merger service
 from python.imageGraphics.colorPicker import hex_to_rgb, rgb_to_hex, generate_shades_and_tints
-
+from python.restApiClient import send_request  # REST API client service
 # Define directories (you can reuse existing ones from bgrem.py if needed)
 BASE_DIR = Path(os.getcwd())
 UPLOAD_DIR = BASE_DIR / "public" / "uploads"
@@ -400,7 +400,80 @@ async def pdf_merger_endpoint(files: List[UploadFile] = File(...)):
                 shutil.rmtree(session_dir)
         except Exception as e:
             print(f"Error cleaning up temporary files: {e}")
+@app.post("/yaml-validator")
+async def yaml_validator_endpoint(request: Request):
+    try:
+        payload = await request.json()
+        yaml_content = payload.get("yaml", "")
+        action = payload.get("action", "")
+        
+        if not yaml_content:
+            raise HTTPException(status_code=400, detail="Missing YAML content in request body")
+        
+        if action == "validate":
+            is_valid = validate_yaml(yaml_content)
+            if is_valid:
+                return JSONResponse({"valid": True})
+            else:
+                error_info = get_yaml_error(yaml_content)
+                error_message = error_info[1] if error_info else "Invalid YAML format"
+                return JSONResponse({"valid": False, "error": error_message})
+        
+        elif action == "format":
+            try:
+                formatted = format_yaml(yaml_content)
+                return JSONResponse({"formatted": formatted})
+            except ValueError as e:
+                return JSONResponse({"error": str(e)}, status_code=400)
+        else:
+            raise HTTPException(status_code=400, detail="Invalid action specified. Use 'validate' or 'format'")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api-client")
+async def api_client_endpoint(request: Request):
+    print("Hello")
+    try:
+        data = await request.json()
+        
+        # Extract request parameters
+        method = data.get("method")
+        url = data.get("url")
+        
+        if not method or not url:
+            raise HTTPException(status_code=400, detail="Method and URL are required")
+        
+        # Optional parameters
+        headers = data.get("headers")
+        params = data.get("params")
+        body_type = data.get("bodyType")
+        body_content = data.get("bodyContent")
+        auth_type = data.get("authType")
+        auth_params = data.get("authParams")
+        timeout = data.get("timeout", 30)
+        verify_ssl = data.get("verifySSL", True)
+        follow_redirects = data.get("followRedirects", True)
+        
+        # Send the request
+        result = send_request(
+            method=method,
+            url=url,
+            headers=headers,
+            params=params,
+            body_type=body_type,
+            body_content=body_content,
+            auth_type=auth_type,
+            auth_params=auth_params,
+            timeout=timeout,
+            verify_ssl=verify_ssl,
+            follow_redirects=follow_redirects
+        )
+        
+        return JSONResponse(result)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+        
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
     
