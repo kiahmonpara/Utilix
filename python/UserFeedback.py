@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-FEEDBACK_FILE = "user_requests.json"
+FEEDBACK_FILE = os.path.join(os.getcwd(), "user_requests.json")
 
 def load_requests():
     if not os.path.exists(FEEDBACK_FILE):

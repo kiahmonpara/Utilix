@@ -2,6 +2,7 @@ import os
 import uuid
 import shutil
 from pathlib import Path
+from datetime import datetime  # Add this import
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -21,7 +22,17 @@ from python.textValidators.xml_validator import validate_xml, get_xml_error, for
 from python.pdfs.pdfMerge import merge_pdfs  # PDF merger service
 from python.imageGraphics.colorPicker import hex_to_rgb, rgb_to_hex, generate_shades_and_tints
 from python.restApiClient import send_request  # REST API client service
-# Define directories (you can reuse existing ones from bgrem.py if needed)
+from python.UserFeedback import load_requests, save_request
+from python.randomGenerator import (
+    random_color,
+    random_number,
+    random_float,
+    random_name,
+    random_word,
+    random_sentence,
+    random_emoji,
+    random_password,
+)
 BASE_DIR = Path(os.getcwd())
 UPLOAD_DIR = BASE_DIR / "public" / "uploads"
 OUTPUT_DIR = BASE_DIR / "public" / "results"
@@ -474,6 +485,129 @@ async def api_client_endpoint(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
         
+@app.post("/user-feedback/submit")
+async def submit_feedback(request: Request):
+    """
+    Endpoint to submit user feedback.
+    """
+    try:
+        payload = await request.json()
+        print("Received Payload:", payload)  # Debugging
+        name = payload.get("name", "Anonymous")
+        feature = payload.get("feature", "")
+
+        if not feature:
+            raise HTTPException(status_code=400, detail="Feature description is required.")
+
+        request_data = {
+            "name": name,
+            "feature": feature,
+            "timestamp": datetime.now().isoformat()
+        }
+
+        save_request(request_data)
+        print("Feedback Saved:", request_data)  # Debugging
+        return JSONResponse({"message": "Feedback submitted successfully!"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to submit feedback: {str(e)}")
+    
+@app.get("/user-feedback/view")
+async def view_feedback():
+    """
+    Endpoint to retrieve all user feedback.
+    """
+    try:
+        feedback_list = load_requests()
+        print("Feedback List:", feedback_list)  # Debugging
+        return JSONResponse({"feedback": feedback_list})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve feedback: {str(e)}")
+
+@app.post("/random-generator")
+async def random_generator_endpoint(request: Request):
+    """
+    Endpoint to generate random values based on the type.
+    """
+    try:
+        payload = await request.json()
+        random_type = payload.get("type", "")
+
+        if random_type == "color":
+            result = random_color()
+        elif random_type == "number":
+            start = payload.get("start", 1)
+            end = payload.get("end", 100)
+            result = random_number(start, end)
+        elif random_type == "float":
+            start = payload.get("start", 0.0)
+            end = payload.get("end", 1.0)
+            result = random_float(start, end)
+        elif random_type == "name":
+            result = random_name()
+        elif random_type == "word":
+            result = random_word()
+        elif random_type == "sentence":
+            result = random_sentence()
+        elif random_type == "emoji":
+            result = random_emoji()
+        elif random_type == "password":
+            length = payload.get("length", 10)
+            result = random_password(length)
+        else:
+            raise HTTPException(status_code=400, detail="Invalid random type specified.")
+
+        return JSONResponse({"result": result})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate random value: {str(e)}")
+    
+from python.randomUUID import generate_uuid
+
+@app.post("/random-uuid")
+async def random_uuid_endpoint():
+    """
+    Endpoint to generate a random UUID (version 4).
+    """
+    try:
+        result = generate_uuid()
+        return JSONResponse({"uuid": result})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate UUID: {str(e)}")
+
+from python.network import ip_lookup, dns_lookup, ping_host
+
+@app.post("/network-tool")
+async def network_tool_endpoint(request: Request):
+    """
+    Endpoint to perform network operations like ping, traceroute, and IP lookup.
+    """
+    try:
+        payload = await request.json()
+        host = payload.get("host", "")
+        action = payload.get("action", "")
+
+        if not host:
+            raise HTTPException(status_code=400, detail="Host is required.")
+
+        if action == "ping":
+            result = []
+            for line in ping_host(host):
+                result.append(line)
+            return JSONResponse({"result": "\n".join(result)})
+
+        elif action == "ip-lookup":
+            result = ip_lookup(host)
+            return JSONResponse({"result": result})
+
+        elif action == "dns-lookup":
+            result = dns_lookup(host)
+            return JSONResponse({"result": result})
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid action specified.")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to perform network operation: {str(e)}")
+    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
     

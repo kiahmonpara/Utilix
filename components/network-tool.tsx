@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -51,7 +52,7 @@ export default function NetworkTool() {
   return (
     <div className="tool-ui">
       <h1 className="text-2xl font-bold mb-4">Network Tool</h1>
-      <p className="mb-4">Perform network operations like ping and traceroute.</p>
+      <p className="mb-4">Perform network operations like ping, traceroute, and IP lookup.</p>
 
       <div className="mb-4">
         <Input
@@ -61,26 +62,22 @@ export default function NetworkTool() {
           onChange={(e) => setHost(e.target.value)}
           className="mb-2"
         />
-        <div className="flex gap-2 mb-2">
-          <Button
-            variant={action === "ping" ? "default" : "outline"}
-            onClick={() => setAction("ping")}
-          >
-            Ping
-          </Button>
-          <Button
-            variant={action === "traceroute" ? "default" : "outline"}
-            onClick={() => setAction("traceroute")}
-          >
-            Traceroute
-          </Button>
-        </div>
-        <Button onClick={handleNetworkAction} disabled={loading}>
+        <Select onValueChange={(value) => setAction(value)} value={action}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select an action" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ping">Ping</SelectItem>
+            <SelectItem value="ip-lookup">IP Lookup</SelectItem>
+            <SelectItem value="dns-lookup">DNS Lookup</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button onClick={handleNetworkAction} disabled={loading} className="mt-4">
           {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Run"}
         </Button>
       </div>
 
-      {error && <div className="text-destructive mb-4">Error: {error}</div>}
+      {error && <div className="text-red-500 mb-4">Error: {error}</div>}
 
       {result && (
         <Textarea
