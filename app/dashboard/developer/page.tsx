@@ -1,56 +1,129 @@
 "use client"
 import { useState } from "react"
-import Sidebar from "@/components/sidebar"
-import ToolGrid from "@/components/tool-grid"
-import "../../../styles/suite-page.css"
+import type React from "react"
 
-const developerTools = {
-  free: [
-    { name: "JSON/XML/YAML Formatter", icon: "📝", description: "Format and validate JSON, XML, and YAML data" },
-    { name: "REST API Client", icon: "🔌", description: "Test and debug REST APIs with a simple interface" },
-    { name: "Code Beautifier", icon: "✨", description: "Format HTML, CSS, and JavaScript code" },
-    { name: "Base64 Encoder/Decoder", icon: "🔄", description: "Encode and decode Base64 strings" },
-  ],
-  pro: [
-    { name: "JWT Decoder", icon: "🔑", description: "Decode and verify JSON Web Tokens" },
-    { name: "Regex Tester", icon: "🔍", description: "Test and debug regular expressions" },
-    { name: "API Rate Limits Increase", icon: "⚡", description: "Higher rate limits for API calls" },
-  ],
+import "../../../styles/suite-page.css"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import Sidebar from "@/components/sidebar"
+import ToolCard from "@/components/tool-card"
+import MarkdownEditorTool from "@/components/markdown-editor-tool"
+import YamlValidatorTool from "@/components/yaml-validator-tool"
+import XmlValidatorTool from "@/components/xml-validator-tool"
+import JsonValidatorTool from "@/components/json-validator-tool"
+import RestApiClientTool from "@/components/rest-api-client-tool"
+import CodeFormatterTool from "@/components/code-formatter-tool" 
+interface Tool {
+  id: string  
+  name: string
+  icon: string
+  description: string
+  component: React.ReactNode
 }
 
-export default function DeveloperSuite() {
-  const [isOpen, setIsOpen] = useState(true)
-  
+export default function Home() {
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [activeTool, setActiveTool] = useState<Tool | null>(null)
+
+  const tools: Tool[] = [
+    
+    {
+      id: "markdown-editor",
+      name: "Markdown Editor",
+      icon: "📝",
+      description: "Edit, validate and preview Markdown",
+      component: <MarkdownEditorTool />,
+    },
+    {
+      id: "yaml-validator",
+      name: "YAML Validator",
+      icon: "📋",
+      description: "Validate and format YAML documents",
+      component: <YamlValidatorTool />,
+    },
+    {
+      id: "xml-validator",
+      name: "XML Validator",
+      icon: "📄",
+      description: "Validate and format XML documents",
+      component: <XmlValidatorTool />, // Add the corresponding component
+    },
+    {
+      id: "json-validator",
+      name: "JSON Validator",
+      icon: "🔍",
+      description: "Validate and format JSON documents",
+      component: <JsonValidatorTool />, // Add the corresponding component
+    },
+    {
+      id: "rest-api-client",
+      name: "REST API Client",
+      icon: "🌐",
+      description: "Test and interact with REST APIs",
+      component: <RestApiClientTool />,
+    },
+    {
+      id: "code-formatter",
+      name: "Code Formatter",
+      icon: "🖋️",
+      description: "Format HTML, CSS, Javascript, Python code.",
+      component: <CodeFormatterTool />,
+    },
+     ]
+
+// In each page.tsx file
+const handleToolClick = (tool: Tool) => {
+  setActiveTool(tool) 
+  setSidebarOpen(false) // This is the key change to auto-collapse the sidebar
+}
+
+
   return (
-    <div className="suite-page">
-      <Sidebar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
-      <main className="suite-content">  
-        <div className="suite-header">
-          <div className="suite-icon">💻</div>
-          <h1>Developer Suite</h1>
+    <div className="flex min-h-screen">
+      <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+
+      <main className={`flex-1 p-6 overflow-auto transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Python Tools Dashboard</h1>
+          <p className="text-muted-foreground">
+            A collection of powerful Python tools integrated into your Next.js application.
+          </p>
         </div>
 
-        <div className="suite-description">
-          Tools for developers to streamline coding workflows and improve productivity.
-        </div>
-
-        <div className="tier-section">
-          <h2 className="tier-title">Free Tools</h2>
-          <ToolGrid tools={developerTools.free} />
-        </div>
-
-        <div className="tier-section pro-section">
-          <h2 className="tier-title">Pro Tools</h2>
-          <div className="pro-overlay">
-            <div className="pro-message">
-              <h3>Upgrade to Pro</h3>
-              <p>Unlock premium developer tools with a Pro subscription</p>
-              <button className="upgrade-button">Upgrade Now</button>
-            </div>
-          </div>
-          <ToolGrid tools={developerTools.pro} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {tools.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              name={tool.name}
+              icon={tool.icon}
+              description={tool.description}
+              onClick={() => handleToolClick(tool)}
+            />
+          ))}
         </div>
       </main>
+
+      <Dialog open={!!activeTool} onOpenChange={(open) => !open && setActiveTool(null)}>
+  <DialogContent className="max-w-5xl p-0 h-[90vh] overflow-hidden">
+    {activeTool && (
+      <>
+        <DialogHeader className="border-b p-4 flex flex-row items-start gap-3">
+          <div className="tool-icon text-4xl">{activeTool.icon}</div>
+          <div className="flex flex-col items-start">
+            <DialogTitle className="text-xl font-bold text-black dark:text-white">
+              {activeTool.name}
+            </DialogTitle>
+            <DialogDescription className="text-sm mt-1 text-left text-gray-700 dark:text-gray-300">
+              {activeTool.description}
+            </DialogDescription>
+          </div>
+        </DialogHeader>
+        <div className="p-5 overflow-y-auto" style={{ height: 'calc(90vh - 80px)' }}>
+          {activeTool.component}
+        </div>
+      </>
+    )}
+  </DialogContent>
+</Dialog>
     </div>
   )
 }

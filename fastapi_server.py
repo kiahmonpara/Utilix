@@ -8,7 +8,8 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query, Reque
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from typing import Optional,List
+from typing import Optional,List,Dict, Any
+from fastapi import Body
 
 # Import the service functions
 from python.imageGraphics.bgRemover import remove_background
@@ -23,6 +24,7 @@ from python.pdfs.pdfMerge import merge_pdfs  # PDF merger service
 from python.imageGraphics.colorPicker import hex_to_rgb, rgb_to_hex, generate_shades_and_tints
 from python.restApiClient import send_request  # REST API client service
 from python.UserFeedback import load_requests, save_request
+from python.imageGraphics.imageConvertor import convert_image  # Image conversion service
 from python.randomGenerator import (
     random_color,
     random_number,
@@ -32,6 +34,12 @@ from python.randomGenerator import (
     random_sentence,
     random_emoji,
     random_password,
+)
+from python.palette_service import (
+    generate_random_palette,
+    generate_harmony_palette,
+    generate_ai_palette,
+    create_gradient_css
 )
 BASE_DIR = Path(os.getcwd())
 UPLOAD_DIR = BASE_DIR / "public" / "uploads"
@@ -59,6 +67,108 @@ def save_binary_file(file_name, data):
     except Exception as e:
         print(f"Error saving file: {str(e)}")
         raise
+
+@app.post("/ColorPaletteGenerator")
+async def color_palette_generator_endpoint(request: Dict[str, Any] = Body(...)):
+    try:
+        prompt = request.get("prompt")
+        base_color = request.get("baseColor")
+        harmony_type = request.get("harmonyType")
+        count = min(max(request.get("count", 5), 1), 10)  # Limit between 1-10 colors
+        
+        # Method 1: AI-generated palette from prompt
+        if prompt:
+            colors = await generate_ai_palette(prompt, count)
+            gradient_css = create_gradient_css(colors)
+            return {"palette": colors, "gradientCss": gradient_css}
+        
+        # Method 2: Harmony-based palette from base color
+        elif base_color and harmony_type:
+            colors = generate_harmony_palette(
+                base_color, 
+                harmony_type,
+                count
+            )
+            gradient_css = create_gradient_css(colors)
+            return {"palette": colors, "gradientCss": gradient_css}
+        
+        # Method 3: Random palette (default)
+        else:
+            colors = generate_random_palette(count)
+            gradient_css = create_gradient_css(colors)
+            return {"palette": colors, "gradientCss": gradient_css}
+            
+    except Exception as e:
+        # Fallback to a default palette if anything fails
+        colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][:count]
+        return {
+            "palette": colors,
+            "gradientCss": create_gradient_css(colors),
+            "error": str(e)
+        }
+
+
+@app.post("/convert-image")
+async def convert_image_endpoint(
+    file: UploadFile = File(...),
+    format: str = Form(...),
+    quality: Optional[int] = Form(95),
+    resize: Optional[float] = Form(None)
+):
+    # Validate file type
+    supported_formats = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.tiff', '.ico']
+    if not any(file.filename.lower().endswith(ext) for ext in supported_formats):
+        raise HTTPException(status_code=400, detail=f"Invalid file type. Supported formats: {', '.join(supported_formats)}")
+    
+    # Create a unique filename for the uploaded file
+    unique_id = str(uuid.uuid4())
+    file_ext = file.filename.split('.')[-1]
+    input_filename = f"{unique_id}.{file_ext}"
+    input_path = UPLOAD_DIR / input_filename
+
+    # Save the uploaded file to disk
+    with open(input_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Define the output filename and path
+    output_filename = f"{unique_id}.{format.lower()}"
+    output_path = OUTPUT_DIR / output_filename
+
+    # Process quality (make sure it's within valid range)
+    quality_value = min(max(quality, 1), 100) if quality is not None else 95
+    
+    # Process resize parameter
+    resize_value = float(resize) if resize is not None else None
+    
+    # Call the convert_image function
+    result = convert_image(
+        input_path=str(input_path),
+        output_path=str(output_path),
+        output_format=format.upper(),
+        quality=quality_value,
+        resize=resize_value
+    )
+    
+    if result is None:
+        # Clean up the input file
+        try:
+            os.remove(input_path)
+        except Exception:
+            pass
+        raise HTTPException(status_code=500, detail="Image conversion failed")
+
+    # Clean up the input file after processing
+    try:
+        os.remove(input_path)
+    except Exception:
+        pass
+
+    # Return the resulting file as a response
+    return FileResponse(
+        path=str(output_path), 
+        filename=f"{os.path.splitext(file.filename)[0]}.{format.lower()}",
+        media_type=f"image/{format.lower()}"
+    )
 @app.post("/remove-background")
 async def remove_background_endpoint(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
