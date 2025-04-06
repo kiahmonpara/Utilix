@@ -1,15 +1,32 @@
 import "../styles/dashboard-overview.css"
 import { useRouter } from 'next/navigation'
+import NLP from '../app/Chatbot/Nlp.jsx' // Import the NLP component
+import { useState } from 'react'
 
 export default function DashboardOverview() {
-
+  const [showNLP, setShowNLP] = useState(false);
   const router = useRouter();
 
   const handleUpgrade = () => {
     router.push('/payment');  // This assumes you have a payment route that renders your Stripe component
   };
   return (
-    <div className="overview-container">
+    <div className="overview-container relative">
+       <div className="absolute top-4 right-4 z-10">
+        <button 
+          onClick={() => setShowNLP(!showNLP)}
+          className="nlp-toggle-button"
+          aria-label="Toggle NLP Assistant"
+        >
+          {showNLP ? '✕' : '🤖'}
+        </button>
+        
+        {showNLP && (
+          <div className="nlp-container">
+            <NLP />
+          </div>
+        )}
+      </div>
       <div className="overview-card current-plan">
         <h2 className="card-title">Current Plan</h2>
         <div className="plan-details">
