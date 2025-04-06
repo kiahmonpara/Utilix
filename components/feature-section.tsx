@@ -2,39 +2,46 @@ import "../styles/feature-section.css"
 
 const suiteFeatures = [
   {
-    title: "Developer Suite",
-    icon: "💻",
-    description: "Essential tools for developers to streamline coding workflows",
-    features: ["JSON/XML/YAML Formatter", "REST API Client", "Code Beautifier", "Base64 Encoder/Decoder"],
-    proFeatures: ["JWT Decoder", "Regex Tester", "API Rate Limits Increase"],
+    title: "One-Stop Hub",
+    icon: "🧰",
+    description: "Unlike existing solutions scattered across multiple websites, this platform brings over 20+ daily-use tools into a single, intuitive interface",
+    features: ["Essential tools access", "Intuitive interface", "Integrated ecosystem"],
+    proFeatures: ["Premium tools access", "Advanced features", "Priority updates"],
   },
   {
-    title: "Student Suite",
-    icon: "🎓",
-    description: "Tools designed for academic success and productivity",
-    features: ["Unit & Currency Converter", "Markdown Editor", "Timer & Pomodoro", "Notepad"],
-    proFeatures: ["PDF Tools", "Random Name Generator", "Enhanced Summarization"],
+    title: "Dual Mode Access",
+    icon: "🔄",
+    description: "Choose between Free Tier with lightning-fast access or Power-Packed Paid Tier with advanced features",
+    features: ["Lightning-fast access", "Essential tools", "Privacy-focused"],
+    proFeatures: ["Advanced tools", "Batch processing", "Cloud features"],
   },
   {
-    title: "Office Suite",
-    icon: "💼",
-    description: "Boost your productivity with essential office tools",
-    features: ["CSV ↔ Excel Converter", "JSON ↔ Table Viewer", "Text Summarizer"],
-    proFeatures: ["Secure Notes", "File Converter", "Email Header Parser"],
+    title: "Audio Tools",
+    icon: "🔊",
+    description: "Convert text to natural-sounding speech, trim audio clips, and convert formats directly in your browser—great for accessibility and quick edits",
+    features: ["Text-to-speech", "Basic audio trimming", "Format conversion"],
+    proFeatures: ["Premium voices", "Advanced editing", "Batch processing"],
   },
   {
-    title: "Designer Suite",
-    icon: "🎨",
-    description: "Creative tools for designers and content creators",
-    features: ["Color Palette Generator", "QR Code Generator", "Font Previewer"],
-    proFeatures: ["Image Converter", "Favicon Generator", "Vector to Raster Conversion"],
+    title: "Personalization",
+    icon: "📌",
+    description: "Users can pin their favorite tools, save sessions, or access history—creating a tailored productivity cockpit",
+    features: ["Pin favorite tools", "Basic history", "Session saving"],
+    proFeatures: ["Extended history", "Cloud sync", "Custom workspace"],
   },
   {
-    title: "Network & Security Suite",
+    title: "Ad-Free Experience",
+    icon: "✨",
+    description: "Unlike many \"free tool\" sites filled with ads, this platform is clean, fast, and focused purely on productivity",
+    features: ["No advertisements", "Clean interface", "Fast loading"],
+    proFeatures: ["Priority support", "Enhanced performance", "Exclusive features"],
+  },
+  {
+    title: "Multilingual",
     icon: "🌐",
-    description: "Essential tools for network diagnostics and security",
-    features: ["IP & DNS Lookup", "Password Generator"],
-    proFeatures: ["Ping/Traceroute", "Hash Generator", "WHOIS Lookup"],
+    description: "Multilingual feature to allow user to comfortably surf in their preferred choices",
+    features: ["Basic language support", "Interface translation", "Key languages"],
+    proFeatures: ["All languages", "Content translation", "Regional settings"],
   },
 ]
 
@@ -49,33 +56,9 @@ export default function FeatureSection() {
               <div className="feature-icon">{suite.icon}</div>
               <h3 className="feature-title">{suite.title}</h3>
             </div>
-            <p className="feature-description">{suite.description}</p>
-            <div className="feature-tiers">
-              <div className="feature-tier free">
-                <h4 className="tier-title">Free</h4>
-                <ul className="feature-list">
-                  {suite.features.map((feature, idx) => (
-                    <li key={idx} className="feature-item">
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="feature-tier pro">
-                <h4 className="tier-title">Pro</h4>
-                <ul className="feature-list">
-                  {suite.proFeatures.map((feature, idx) => (
-                    <li key={idx} className="feature-item">
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
           </div>
         ))}
       </div>
     </div>
   )
 }
-

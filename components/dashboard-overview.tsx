@@ -1,6 +1,13 @@
 import "../styles/dashboard-overview.css"
+import { useRouter } from 'next/navigation'
 
 export default function DashboardOverview() {
+
+  const router = useRouter();
+
+  const handleUpgrade = () => {
+    router.push('/payment');  // This assumes you have a payment route that renders your Stripe component
+  };
   return (
     <div className="overview-container">
       <div className="overview-card current-plan">
@@ -8,7 +15,7 @@ export default function DashboardOverview() {
         <div className="plan-details">
           <div className="plan-name">Free Tier</div>
           <div className="plan-description">Access to essential tools</div>
-          <button className="upgrade-button">Upgrade to Pro</button>
+          <button className="upgrade-button" onClick={handleUpgrade}>Upgrade to Pro</button>
         </div>
       </div>
 

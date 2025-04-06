@@ -3,6 +3,9 @@ import uuid
 import shutil
 from pathlib import Path
 from datetime import datetime  # Add this import
+from bs4 import BeautifulSoup
+import requests
+from pydantic import BaseModel
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -346,28 +349,16 @@ async def qr_generator_endpoint(
 
 @app.post("/generate-image/")
 async def generate_image_endpoint(prompt: str = Form(...)):
-    """
-    Generate an image based on the provided prompt.
-    """
     if not prompt:
-        raise HTTPException(status_code=400, detail="Prompt is required to generate an image")
-
+        raise HTTPException(status_code=400, detail="Prompt is required")
     try:
-        # Call the service function to generate the image
         output_path = generate_image(prompt)
-
-        # Check if the file exists
         if not output_path or not os.path.exists(output_path):
             raise HTTPException(status_code=500, detail="Failed to generate image")
-
-        # Construct the public URL for the generated image
-        image_url = f"/public/results/{os.path.basename(output_path)}"
-
-        # Return the URL in the response
+        image_url = f"/results/{os.path.basename(output_path)}"
         return JSONResponse({"image_url": image_url, "message": "Image generated successfully!"})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
-
+        raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
 @app.post("/json-validator")
 async def json_validator_endpoint(request: Request):
     try:
@@ -632,7 +623,6 @@ async def view_feedback():
         return JSONResponse({"feedback": feedback_list})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve feedback: {str(e)}")
-
 @app.post("/random-generator")
 async def random_generator_endpoint(request: Request):
     """
@@ -739,6 +729,39 @@ async def format_code_endpoint(request: Request):
         raise HTTPException(status_code=500, detail=f"Failed to format code: {str(e)}")
 
 
+@app.post("/web-scraper")
+async def web_scraper_endpoint(url: str = Form(...), element: Optional[str] = Form(None)):
+    """
+    Scrape a webpage and return the content of a specific HTML element.
+    """
+    try:
+        # Fetch the webpage
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise an error for bad status codes
+
+        # Parse the HTML content
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Extract the specified element or return the entire page content
+        if element:
+            elements = soup.select(element)  # Use CSS selectors
+            if not elements:
+                raise HTTPException(status_code=404, detail=f"No elements found for selector: {element}")
+            return {"elements": [str(el) for el in elements]}
+        else:
+            return {"html": soup.prettify()}
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch the webpage: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+class UploadResponse(BaseModel):
+    fileId: str
+    webViewLink: str
+    previewLink: Optional[str] = None
+
+class ErrorResponse(BaseModel):
+    error: str
 
     
 if __name__ == "__main__":

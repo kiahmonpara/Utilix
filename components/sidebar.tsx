@@ -11,6 +11,12 @@ const suites = [
   { name: "Network Suite", icon: "🌐", path: "/dashboard/network" },
 ]
 
+const studyResources = [
+  { name: "Website Overview", icon: "📚", path: "/dashboard/study/learning-paths" },
+  { name: "AI tool Finder", icon: "🧪", path: "/dashboard/study/labs" },
+  { name: "Customise tool builder", icon: "📝", path: "/dashboard/study/notes" },
+]
+
 interface SidebarProps {
   isOpen: boolean
   toggleSidebar: () => void
@@ -18,9 +24,14 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const [suitesOpen, setSuitesOpen] = useState(false)
+  const [studyOpen, setStudyOpen] = useState(false)
 
   const toggleSuites = () => {
     setSuitesOpen(!suitesOpen)
+  }
+
+  const toggleStudy = () => {
+    setStudyOpen(!studyOpen)
   }
 
   return (
@@ -41,13 +52,13 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
           </Link>
 
           <div className="nav-item dropdown" onClick={toggleSuites}>
-          <div className="nav-item-content">
-  <span className="nav-icon">📦</span>
-  <span className="nav-text">Suites</span>
-  <span className="dropdown-arrow" style={{ transform: suitesOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-    ▼
-  </span>
-</div>
+            <div className="nav-item-content">
+              <span className="nav-icon">📦</span>
+              <span className="nav-text">Suites</span>
+              <span className="dropdown-arrow" style={{ transform: suitesOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                ▼
+              </span>
+            </div>
 
             {suitesOpen && (
               <div className="dropdown-menu">
@@ -60,15 +71,37 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
               </div>
             )}
           </div>
+          
+          {/* New Study dropdown section */}
+          <div className="nav-item dropdown" onClick={toggleStudy}>
+            <div className="nav-item-content">
+              <span className="nav-icon">📖</span>
+              <span className="nav-text">Study</span>
+              <span className="dropdown-arrow" style={{ transform: studyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                ▼
+              </span>
+            </div>
+
+            {studyOpen && (
+              <div className="dropdown-menu">
+                {studyResources.map((resource, index) => (
+                  <Link href={resource.path} key={index} className="dropdown-item">
+                    <span className="dropdown-icon">{resource.icon}</span>
+                    <span>{resource.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
 
           <Link href="/dashboard/chatbot" className="nav-item">
             <span className="nav-icon">💬</span>
             <span className="nav-text">Chatbot</span>
           </Link>
 
-          <Link href="/dashboard/payment" className="nav-item">
+          <Link href="/payment" className="nav-item">
             <span className="nav-icon">💳</span>
-            <span className="nav-text">Payment</span>
+            <span className="nav-text" >Payment</span>
           </Link>
         </nav>
       </div>
@@ -81,4 +114,3 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
     </>
   )
 }
-

@@ -12,6 +12,8 @@ import XmlValidatorTool from "@/components/xml-validator-tool"
 import JsonValidatorTool from "@/components/json-validator-tool"
 import RestApiClientTool from "@/components/rest-api-client-tool"
 import CodeFormatterTool from "@/components/code-formatter-tool" 
+import WebScraperTool from "@/components/web-scraper-tool" // Import Web Scraper Tool
+
 interface Tool {
   id: string  
   name: string
@@ -68,7 +70,14 @@ export default function Home() {
       description: "Format HTML, CSS, Javascript, Python code.",
       component: <CodeFormatterTool />,
     },
-     ]
+    {
+      id: "web-scraper",
+      name: "Web Scraper",
+      icon: "🌐",
+      description: "Scrape content from any webpage by URL and optional CSS selector.",
+      component: <WebScraperTool />, // Add the corresponding component
+    },
+    ]
 
 // In each page.tsx file
 const handleToolClick = (tool: Tool) => {
@@ -90,14 +99,17 @@ const handleToolClick = (tool: Tool) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {tools.map((tool) => (
-            <ToolCard
-              key={tool.id}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-              onClick={() => handleToolClick(tool)}
-            />
+        {tools.map((tool) => (
+            <div key={tool.id} className="tool-card">
+              <div>
+                <div className="tool-icon">{tool.icon}</div>
+                <div className="tool-name">{tool.name}</div>
+                <div className="tool-description">{tool.description}</div>
+              </div>
+              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+                Open Tool
+              </button>
+            </div>
           ))}
         </div>
       </main>

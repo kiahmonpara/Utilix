@@ -106,13 +106,16 @@ const handleToolClick = (tool: Tool) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {tools.map((tool) => (
-            <ToolCard
-              key={tool.id}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-              onClick={() => handleToolClick(tool)}
-            />
+            <div key={tool.id} className="tool-card">
+              <div>
+                <div className="tool-icon">{tool.icon}</div>
+                <div className="tool-name">{tool.name}</div>
+                <div className="tool-description">{tool.description}</div>
+              </div>
+              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+                Open Tool
+              </button>
+            </div>
           ))}
         </div>
       </main>

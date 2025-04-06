@@ -9,7 +9,12 @@ import ToolCard from "@/components/tool-card"
 import RestApiClientTool from "@/components/rest-api-client-tool"
 import RandomUUIDGeneratorTool from "@/components/random-uuid-generator-tool"; // Import Random UUID Generator Tool
 import NetworkTool from "@/components/network-tool"; // Import CSV/Excel/SQL Tool
-import PasswordGeneratorTool from "@/components/password-tool"; // Import Password Generator Tool
+import PasswordGeneratorTool from "@/components/password-tool";
+import AESEncryption from "@/components/aes-encryption-tool"; // Import User Feedback Tool
+import SEOTools from "@/components/SEOTools";
+import WebScraperTool from "@/components/web-scraper-tool"; // Import Random Generator Tool
+
+// Import Password Generator Tool
 interface Tool {
   id: string  
   name: string
@@ -51,6 +56,27 @@ export default function Home() {
       description: "Generate secure random passwords.",
       component: <PasswordGeneratorTool />,
     },
+    {
+      id: "aes-encryption",
+      name: "AES Encryption Tool",
+      icon: "🔒",
+      description: "Encrypt and decrypt data using AES encryption.",
+      component: <AESEncryption />,
+    },
+    {
+      id: "SEO-tools",
+      name: "SEO Tools",
+      icon: "🔍",
+      description: "Analyze keyword density and generate meta tags.",
+      component: <SEOTools />,
+    },
+    {
+      id: "web-scraper",
+      name: "Web Scraper",
+      icon: "🌐",
+      description: "Scrape content from any webpage by URL and optional CSS selector.",
+      component: <WebScraperTool />, // Add the corresponding component
+    },
   ]
 
 // In each page.tsx file
@@ -74,13 +100,16 @@ const handleToolClick = (tool: Tool) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {tools.map((tool) => (
-            <ToolCard
-              key={tool.id}
-              name={tool.name}
-              icon={tool.icon}
-              description={tool.description}
-              onClick={() => handleToolClick(tool)}
-            />
+            <div key={tool.id} className="tool-card">
+              <div>
+                <div className="tool-icon">{tool.icon}</div>
+                <div className="tool-name">{tool.name}</div>
+                <div className="tool-description">{tool.description}</div>
+              </div>
+              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+                Open Tool
+              </button>
+            </div>
           ))}
         </div>
       </main>
