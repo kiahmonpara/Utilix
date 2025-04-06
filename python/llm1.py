@@ -25,7 +25,7 @@ def generate(user_query: str):
     ]
 
     # Read the system prompt from external file
-    with open("python/systemprompt.txt", "r", encoding="utf-8") as sp:
+    with open("python/systemprompt1.txt", "r", encoding="utf-8") as sp:
         system_prompt_text = sp.read()
 
     generate_content_config = types.GenerateContentConfig(
@@ -48,5 +48,4 @@ def generate(user_query: str):
     ):
         response_text += chunk.text
 
-    # Return the response text
     return response_text
