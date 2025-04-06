@@ -22,6 +22,8 @@ interface Tool {
   icon: string
   description: string
   component: React.ReactNode
+  pro: boolean,
+
 }
 
 export default function Home() {
@@ -35,6 +37,7 @@ export default function Home() {
       icon: "🖼️",
       description: "Remove backgrounds from images with AI precision",
       component: <BgRemoverTool />,
+      pro: true,
     },
     {
       id: "image-converter",
@@ -42,6 +45,7 @@ export default function Home() {
       icon: "🔄",
       description: "Convert images between different formats",
       component: <ImageConverterTool />,
+      pro: false,
     },
     {
       id: "qr-generator",
@@ -49,6 +53,7 @@ export default function Home() {
       icon: "📱",
       description: "Create customized QR codes for URLs and text",
       component: <QrGeneratorTool />,
+      pro: false,
     },
     {
       id: "barcode-generator",
@@ -56,6 +61,7 @@ export default function Home() {
       icon: "📊",
       description: "Generate barcodes in various formats",
       component: <BarcodeGeneratorTool />,
+      pro: false,
     },
     {
       id: "palette-generator",
@@ -63,6 +69,7 @@ export default function Home() {
       icon: "🎨",
       description: "Generate harmonious color palettes",
       component: <PaletteGeneratorTool />,
+      pro: false,
     },
     {
       id: "image-generator",
@@ -70,13 +77,15 @@ export default function Home() {
       icon: "🖌️",
       description: "Generate images from text descriptions",
       component: <ImageGeneratorTool />,
+      pro: true,
     },
     {
       id: "color-picker",
       name: "Color Picker",
       icon: "🌈",
       description: "Pick and explore colors with ease",
-      component: <ColorPickerTool />, // Add the corresponding component
+      component: <ColorPickerTool />,
+      pro: false,
     },  
     {
       id: "user-feedback",
@@ -84,6 +93,7 @@ export default function Home() {
       icon: "💬",
       description: "Provide feedback messages to users.",
       component: <UserFeedbackTool />,
+      pro: false,
     },
     {
       id: "random-generator",
@@ -91,6 +101,7 @@ export default function Home() {
       icon: "🎲",
       description: "Generate random numbers, strings, colors, and more.",
       component: <RandomGeneratorTool />,
+      pro: false,
     },
   ]
 
@@ -107,25 +118,26 @@ const handleToolClick = (tool: Tool) => {
 
       <main className={`flex-1 p-6 overflow-auto transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Python Tools Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-2">Designer Suite</h1>
           <p className="text-muted-foreground">
-            A collection of powerful Python tools integrated into your Next.js application.
+          Quick-access image converters, color tools, and graphic generators built for visual creators and UI/UX pros.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {tools.map((tool) => (
-            <div key={tool.id} className="tool-card">
-              <div>
-                <div className="tool-icon">{tool.icon}</div>
-                <div className="tool-name">{tool.name}</div>
-                <div className="tool-description">{tool.description}</div>
-              </div>
-              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
-                Open Tool
-              </button>
-            </div>
-          ))}
+  <div key={tool.id} className="tool-card">
+    <div>
+      {tool.pro && <div className="pro-ribbon">Pro</div>} {/* Render only if tool.pro is true */}
+      <div className="tool-icon">{tool.icon}</div>
+      <div className="tool-name">{tool.name}</div>
+      <div className="tool-description">{tool.description}</div>
+    </div>
+    <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+      Open Tool
+    </button>
+  </div>
+))}
 
         </div>
       </main>

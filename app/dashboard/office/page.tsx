@@ -14,12 +14,14 @@ import RestApiClientTool from "@/components/rest-api-client-tool"
 import UserFeedbackTool from "@/components/user-feedback-tool"; // Import User Feedback Tool
 import CsvExcelSqlPgTool from "@/components/csv-excel-sql-pg-tool"; // Import CSV/Excel/SQL Tool
 import PasswordGeneratorTool from "@/components/password-tool"; // Import Password Generator Tool
+
 interface Tool {
   id: string  
   name: string
   icon: string
   description: string
   component: React.ReactNode
+  pro: boolean
 }
 
 export default function Home() {
@@ -33,6 +35,7 @@ export default function Home() {
       icon: "🔄",
       description: "Convert images between different formats",
       component: <ImageConverterTool />,
+      pro: false,
     },
     {
       id: "qr-generator",
@@ -40,6 +43,7 @@ export default function Home() {
       icon: "📱",
       description: "Create customized QR codes for URLs and text",
       component: <QrGeneratorTool />,
+      pro: false,
     },
     {
       id: "barcode-generator",
@@ -47,6 +51,7 @@ export default function Home() {
       icon: "📊",
       description: "Generate barcodes in various formats",
       component: <BarcodeGeneratorTool />,
+      pro: false,
     },
     {
       id: "pdf-merger",
@@ -54,6 +59,7 @@ export default function Home() {
       icon: "📑",
       description: "Combine multiple PDF files into one document",
       component: <PdfMergerTool />,
+      pro: false,
     },
     {
       id: "rest-api-client",
@@ -61,6 +67,7 @@ export default function Home() {
       icon: "🌐",
       description: "Test and interact with REST APIs",
       component: <RestApiClientTool />,
+      pro: true,
     },
     {
       id: "user-feedback",
@@ -68,6 +75,7 @@ export default function Home() {
       icon: "💬",
       description: "Provide feedback messages to users.",
       component: <UserFeedbackTool />,
+      pro: false,
     },
     {
       id: "csv-excel-sql-pg",
@@ -75,6 +83,7 @@ export default function Home() {
       icon: "📊",
       description: "Convert and manage CSV, Excel, and SQL data.",
       component: <CsvExcelSqlPgTool />,
+      pro: true,
     },
     {
       id: "password-generator",
@@ -82,6 +91,7 @@ export default function Home() {
       icon: "🔒",
       description: "Generate secure random passwords.",
       component: <PasswordGeneratorTool />,
+      pro: false,
     },
   ]
 
@@ -98,25 +108,25 @@ const handleToolClick = (tool: Tool) => {
 
       <main className={`flex-1 p-6 overflow-auto transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Python Tools Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-2">Office Suite</h1>
           <p className="text-muted-foreground">
-            A collection of powerful Python tools integrated into your Next.js application.
-          </p>
+          Smart CSV, Excel, and document tools to streamline everyday work, boost productivity, and cut down tab-hopping.          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {tools.map((tool) => (
-            <div key={tool.id} className="tool-card">
-              <div>
-                <div className="tool-icon">{tool.icon}</div>
-                <div className="tool-name">{tool.name}</div>
-                <div className="tool-description">{tool.description}</div>
-              </div>
-              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
-                Open Tool
-              </button>
-            </div>
-          ))}
+        {tools.map((tool) => (
+  <div key={tool.id} className="tool-card">
+    <div>
+      {tool.pro && <div className="pro-ribbon">Pro</div>} {/* Render only if tool.pro is true */}
+      <div className="tool-icon">{tool.icon}</div>
+      <div className="tool-name">{tool.name}</div>
+      <div className="tool-description">{tool.description}</div>
+    </div>
+    <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+      Open Tool
+    </button>
+  </div>
+))}
         </div>
       </main>
 

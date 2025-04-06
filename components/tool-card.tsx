@@ -7,11 +7,19 @@ interface ToolCardProps {
   description: string
   icon: string
   onClick: () => void
+  pro?: boolean // Add a prop to indicate if the tool is "Pro"
 }
 
-export default function ToolCard({ name, description, icon, onClick }: ToolCardProps) {
+export default function ToolCard({ name, description, icon, onClick, pro }: ToolCardProps) {
   return (
-    <Card className="tool-card hover:shadow-md transition-all cursor-pointer" onClick={onClick}>
+    <Card className="tool-card hover:shadow-md transition-all cursor-pointer relative" onClick={onClick}>
+      {/* Pro Ribbon */}
+      {pro && (
+        <div className="pro-ribbon">
+          🏆Pro
+        </div>
+      )}
+
       <CardHeader className="pb-2">
         <div className="tool-icon text-4xl mb-2">{icon}</div>
         <CardTitle className="text-lg">{name}</CardTitle>
@@ -27,4 +35,3 @@ export default function ToolCard({ name, description, icon, onClick }: ToolCardP
     </Card>
   )
 }
-

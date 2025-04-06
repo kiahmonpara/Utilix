@@ -21,6 +21,7 @@ interface Tool {
   icon: string
   description: string
   component: React.ReactNode
+  pro:boolean
 }
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
       icon: "🌐",
       description: "Test and interact with REST APIs",
       component: <RestApiClientTool />,
+      pro: true,
     },
     {
       id: "random-uuid-generator",
@@ -41,6 +43,7 @@ export default function Home() {
       icon: "🔑",
       description: "Generate random UUIDs (version 4).",
       component: <RandomUUIDGeneratorTool />,
+      pro: true,
     },
     {
       id: "network-tool",
@@ -48,6 +51,7 @@ export default function Home() {
       icon: "🌐",
       description: "Perform network-related operations like ping, traceroute, and more.",
       component: <NetworkTool />, // Add the corresponding component
+      pro: true,
     },
     {
       id: "password-generator",
@@ -55,6 +59,7 @@ export default function Home() {
       icon: "🔒",
       description: "Generate secure random passwords.",
       component: <PasswordGeneratorTool />,
+      pro: false,
     },
     {
       id: "aes-encryption",
@@ -62,6 +67,7 @@ export default function Home() {
       icon: "🔒",
       description: "Encrypt and decrypt data using AES encryption.",
       component: <AESEncryption />,
+      pro: true,
     },
     {
       id: "SEO-tools",
@@ -69,6 +75,7 @@ export default function Home() {
       icon: "🔍",
       description: "Analyze keyword density and generate meta tags.",
       component: <SEOTools />,
+      pro: true,
     },
     {
       id: "web-scraper",
@@ -76,6 +83,7 @@ export default function Home() {
       icon: "🌐",
       description: "Scrape content from any webpage by URL and optional CSS selector.",
       component: <WebScraperTool />, // Add the corresponding component
+      pro: true,
     },
   ]
 
@@ -92,25 +100,25 @@ const handleToolClick = (tool: Tool) => {
 
       <main className={`flex-1 p-6 overflow-auto transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Python Tools Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-2">Network Suite</h1>
           <p className="text-muted-foreground">
-            A collection of powerful Python tools integrated into your Next.js application.
-          </p>
+          Instant access to essential networking utilities like IP lookup, DNS tools, ping, and traceroute—all in-browser.          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {tools.map((tool) => (
-            <div key={tool.id} className="tool-card">
-              <div>
-                <div className="tool-icon">{tool.icon}</div>
-                <div className="tool-name">{tool.name}</div>
-                <div className="tool-description">{tool.description}</div>
-              </div>
-              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
-                Open Tool
-              </button>
-            </div>
-          ))}
+        {tools.map((tool) => (
+  <div key={tool.id} className="tool-card">
+    <div>
+      {tool.pro && <div className="pro-ribbon">Pro</div>} {/* Render only if tool.pro is true */}
+      <div className="tool-icon">{tool.icon}</div>
+      <div className="tool-name">{tool.name}</div>
+      <div className="tool-description">{tool.description}</div>
+    </div>
+    <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+      Open Tool
+    </button>
+  </div>
+))}
         </div>
       </main>
 

@@ -20,6 +20,7 @@ interface Tool {
   icon: string
   description: string
   component: React.ReactNode
+  pro: boolean
 }
 
 export default function Home() {
@@ -33,6 +34,7 @@ export default function Home() {
       icon: "🖼️",
       description: "Remove backgrounds from images with AI precision",
       component: <BgRemoverTool />,
+      pro: true,
     },
     {
       id: "image-converter",
@@ -40,6 +42,7 @@ export default function Home() {
       icon: "🔄",
       description: "Convert images between different formats",
       component: <ImageConverterTool />,
+      pro: false,
     },
     {
       id: "markdown-editor",
@@ -47,6 +50,7 @@ export default function Home() {
       icon: "📝",
       description: "Edit, validate and preview Markdown",
       component: <MarkdownEditorTool />,
+      pro: true,
     },
     {
       id: "pdf-merger",
@@ -54,6 +58,7 @@ export default function Home() {
       icon: "📑",
       description: "Combine multiple PDF files into one document",
       component: <PdfMergerTool />,
+      pro: false,
     },
     {
       id: "user-feedback",
@@ -61,6 +66,7 @@ export default function Home() {
       icon: "💬",
       description: "Provide feedback messages to users.",
       component: <UserFeedbackTool />,
+      pro: false,
     },
     {
       id: "random-generator",
@@ -68,6 +74,7 @@ export default function Home() {
       icon: "🎲",
       description: "Generate random numbers, strings, colors, and more.",
       component: <RandomGeneratorTool />,
+      pro: false,
     },
     {
       id: "productivity-tools",
@@ -75,6 +82,7 @@ export default function Home() {
       icon: "⚙️",
       description: "Enhance your productivity with various tools.",
       component: <ProductivityTools />,
+      pro: false,
     },
   ]
 
@@ -91,25 +99,25 @@ const handleToolClick = (tool: Tool) => {
 
       <main className={`flex-1 p-6 overflow-auto transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Python Tools Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-2">
+      Student Suite
+          </h1>
           <p className="text-muted-foreground">
-            A collection of powerful Python tools integrated into your Next.js application.
-          </p>
+          A handy mix of formatters, calculators, and learning aids designed to simplify academic tasks and projects.          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {tools.map((tool) => (
-            <div key={tool.id} className="tool-card">
-              <div>
-                <div className="tool-icon">{tool.icon}</div>
-                <div className="tool-name">{tool.name}</div>
-                <div className="tool-description">{tool.description}</div>
-              </div>
-              <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
-                Open Tool
-              </button>
-            </div>
-          ))}
+{tools.map((tool) => (
+  <div key={tool.id} className="tool-card">
+    {tool.pro && <div className="pro-ribbon">Pro</div>} {/* Render only if tool.pro is true */}
+    <div className="tool-icon">{tool.icon}</div>
+    <div className="tool-name">{tool.name}</div>
+    <div className="tool-description">{tool.description}</div>
+    <button className="use-tool-button" onClick={() => handleToolClick(tool)}>
+      Open Tool
+    </button>
+  </div>
+))}
         </div>
       </main>
 
