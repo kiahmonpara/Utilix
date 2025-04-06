@@ -13,8 +13,7 @@ const suites = [
 
 const studyResources = [
   { name: "Website Overview", icon: "📚", path: "/dashboard/study/learning-paths" },
-  { name: "AI tool Finder", icon: "🧪", path: "/dashboard/study/labs" },
-  { name: "Customise tool builder", icon: "📝", path: "/dashboard/study/notes" },
+  { name: "AI tool Finder", icon: "🧪", path: "/dashboard/study/ai-tool-finder" },
 ]
 
 interface SidebarProps {
